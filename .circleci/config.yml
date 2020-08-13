@@ -9,7 +9,7 @@ jobs:
       MANIFEST_BRANCH: 'twrp-9.0'
       VERSION: '3.4.0'
       VENDOR: 'xiaomi'
-      CODENAME: 'cereus'
+      DEVICE: 'cereus'
       BUILD_LUNCH: 'cereus-eng'
     working_directory: /home/builder/twrp
     steps:
