@@ -4,11 +4,13 @@ jobs:
     docker:
       - image: fr3akyphantom/droid-builder:latest
     environment:
+      GitHubName: 'afiqqo231'
+      GitHubMail: 'github.afiqqo@gmail.com'
       MANIFEST_BRANCH: 'twrp-9.0'
       VERSION: '3.4.0'
       VENDOR: 'xiaomi'
       CODENAME: 'cereus'
-      BUILD_LUNCH: 'cereus'
+      BUILD_LUNCH: 'cereus-eng'
     working_directory: /home/builder/twrp
     steps:
       - checkout
