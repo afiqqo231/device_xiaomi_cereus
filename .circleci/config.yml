@@ -25,7 +25,7 @@ jobs:
             git config --global color.ui true
             echo "Downloading Tools"
             git clone https://github.com/akhilnarang/scripts
-            bash script/setup/android_build_env.sh
+            bash scripts/setup/android_build_env.sh
             echo "Cloning Source"
             repo init --depth=1 -u git://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git -b ${MANIFEST_BRANCH}
             repo sync 
