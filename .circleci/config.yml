@@ -1,8 +1,8 @@
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
-      - image: fr3akyphantom/droid-builder:latest
+      - image: ubuntu:20.04
     environment:
       GitHubName: 'afiqqo231'
       GitHubMail: 'github.afiqqo@gmail.com'
@@ -21,6 +21,8 @@ jobs:
             git config --global user.email $GitHubMail
             git config --global user.name $GitHubName
             git config --global color.ui true
+            git clone https://github.com/akhilnarang/scripts
+            bash script/setup/android_build_env.sh
             repo init --depth=1 -u git://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git -b ${MANIFEST_BRANCH}
             repo sync 
             git clone https://${GITHUB_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} -b ${CIRCLE_BRANCH} device/${VENDOR}/${DEVICE}
@@ -35,7 +37,7 @@ jobs:
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -n "Test Release for $(echo $DEVICE)" -b "TWRP $(echo $VERSION)" -c ${CIRCLE_SHA1} -delete ${VERSION} ${UPLOAD_PATH}
             
 workflows:
-  version: 2
+  version: 2.1
   build_and_test:
     jobs:
       - build:
