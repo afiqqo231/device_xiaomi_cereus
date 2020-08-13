@@ -17,15 +17,17 @@ jobs:
       - run:
           name: AIO Build
           command: |
-            apt-get -y update
-            apt-get -y install git
+            echo "Downloading Tools"
+            apt-get -y update && apt-get -y upgrade && apt-get -y install bc bison build-essential curl flex g++-multilib gcc gcc-multilib clang git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libwxgtk3.0-dev libxml2 libxml2-utils lzop pngcrush schedtool squashfs-tools xsltproc zip zlib1g-dev unzip openjdk-8-jdk python ccache libtinfo5 repo libstdc++6 wget libssl-dev rsync golang-go
+            mkdir -p ~/bin
+            curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+            chmod a+x ~/bin/repo
+            go get -u github.com/tcnksm/ghr
+            export PATH=/root/go/bin:$PATH
             echo "Set GitAuth Infos"
             git config --global user.email $GitHubMail
             git config --global user.name $GitHubName
             git config --global color.ui true
-            echo "Downloading Tools"
-            git clone https://github.com/akhilnarang/scripts
-            bash scripts/setup/android_build_env.sh
             echo "Cloning Source"
             repo init --depth=1 -u git://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git -b ${MANIFEST_BRANCH}
             repo sync 
