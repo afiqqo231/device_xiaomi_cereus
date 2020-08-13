@@ -17,15 +17,19 @@ jobs:
       - run:
           name: AIO Build
           command: |
+            apt-get -y install git
             echo "Set GitAuth Infos"
             git config --global user.email $GitHubMail
             git config --global user.name $GitHubName
             git config --global color.ui true
+            echo "Downloading Tools"
             git clone https://github.com/akhilnarang/scripts
             bash script/setup/android_build_env.sh
+            echo "Cloning Source"
             repo init --depth=1 -u git://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git -b ${MANIFEST_BRANCH}
             repo sync 
             git clone https://${GITHUB_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} -b ${CIRCLE_BRANCH} device/${VENDOR}/${DEVICE}
+            echo "Start Building"
             export ALLOW_MISSING_DEPENDENCIES=true
             export LC_ALL=C
             source build/envsetup.sh
