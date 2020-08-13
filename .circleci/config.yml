@@ -1,0 +1,40 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: fr3akyphantom/droid-builder:latest
+    environment:
+      MANIFEST_BRANCH: 'twrp-9.0'
+      VERSION: '3.4.0'
+      VENDOR: 'xiaomi'
+      CODENAME: 'cereus'
+      BUILD_LUNCH: 'cereus'
+    working_directory: /home/builder/twrp
+    steps:
+      - checkout
+      - run:
+          name: AIO Build
+          command: |
+            echo "Set GitAuth Infos"
+            git config --global user.email $GitHubMail
+            git config --global user.name $GitHubName
+            git config --global color.ui true
+            repo init --depth=1 -u git://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git -b ${MANIFEST_BRANCH}
+            repo sync 
+            git clone https://${GITHUB_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} -b ${CIRCLE_BRANCH} device/${VENDOR}/${DEVICE}
+            export ALLOW_MISSING_DEPENDENCIES=true
+            export LC_ALL=C
+            source build/envsetup.sh
+            lunch omni_${BUILD_LUNCH}
+            make recoveryimage
+            export BUILDFILE_IMG=$(find $(pwd)/out/target/product/${DEVICE}/recovery.img 2>/dev/null)
+            mkdir ${UPLOAD_PATH}
+            cp $BUILDFILE_IMG $UPLOAD_PATH
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -n "Test Release for $(echo $DEVICE)" -b "TWRP $(echo $VERSION)" -c ${CIRCLE_SHA1} -delete ${VERSION} ${UPLOAD_PATH}
+            
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build:
+          context: token
